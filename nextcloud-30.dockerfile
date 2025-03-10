@@ -84,14 +84,14 @@ RUN echo memory_limit=1024M > /usr/local/etc/php/conf.d/memory-limit.ini
 # At this point you meet all the dependencies to install the application
 # You can skip this step and install the application from the application store
 #
-ARG FR_BRANCH=master
-ENV PHP_MEMORY_LIMIT=2048M
-RUN apt-get install -y wget unzip nodejs npm
-RUN wget -c -q -O facerecognition https://github.com/matiasdelellis/facerecognition/archive/$FR_BRANCH.zip \
-  && unzip facerecognition \
-  && mv facerecognition-*  /usr/src/nextcloud/facerecognition \
-  && cd /usr/src/nextcloud/facerecognition \
-  && sed -i 's/webpack --node-env production/NODE_ENV=production webpack/g' package.json \
-  && sed -i 's/webpack --node-env development/NODE_ENV=development webpack/g' package.json \
-  && npm ci \
-  && make
+# ARG FR_BRANCH=master
+# ENV PHP_MEMORY_LIMIT=2048M
+# RUN apt-get install -y wget unzip nodejs npm
+# RUN wget -c -q -O facerecognition https://github.com/matiasdelellis/facerecognition/archive/$FR_BRANCH.zip \
+#   && unzip facerecognition \
+#   && mv facerecognition-*  /usr/src/nextcloud/facerecognition \
+#   && cd /usr/src/nextcloud/facerecognition \
+#   && sed -i 's/webpack --node-env production/NODE_ENV=production webpack/g' package.json \
+#   && sed -i 's/webpack --node-env development/NODE_ENV=development webpack/g' package.json \
+#   && npm ci \
+#   && make

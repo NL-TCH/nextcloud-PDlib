@@ -44,7 +44,7 @@ RUN docker-php-ext-install -j1 bz2
 
 # Test PDlib instalation on builder
 
-RUN apt-get install -y git libpng
+RUN apt-get install -y git libpng-dev
 RUN git clone https://github.com/matiasdelellis/pdlib-min-test-suite.git \
     && cd pdlib-min-test-suite \
     && make
