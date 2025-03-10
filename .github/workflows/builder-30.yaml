@@ -1,4 +1,4 @@
-name: buildx build + push
+name: buildx build + push nextcloud 30
 
 on:
   push:
@@ -18,11 +18,11 @@ jobs:
         with:
           buildx-version: latest
       - name: build the image
-        run: docker buildx build -f nextcloud-31.dockerfile --platform=linux/arm64 .
+        run: docker buildx build -f nextcloud-30.dockerfile --platform=linux/arm64 .
       - name: login to docker hub
         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
       - name: push the image
         run: |
           docker buildx build --push \
-            --tag dockerteun/nextcloud-PDlib:31 \
+            --tag dockerteun/nextcloud-PDlib:30 \
             --platform linux/arm64 .

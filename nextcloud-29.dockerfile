@@ -1,13 +1,13 @@
 #
 # Use a temporary image to compile and test the libraries
 #
-FROM nextcloud:31-apache as builder
+FROM nextcloud:29-apache as builder
 # Build and install dlib on builder
 #
 RUN apt-get update ; \
     apt-get install -y build-essential wget cmake libx11-dev libopenblas-dev
 
-ARG DLIB_BRANCH=v19.24
+ARG DLIB_BRANCH=v19.19
 RUN wget -c -q https://github.com/davisking/dlib/archive/$DLIB_BRANCH.tar.gz \
     && tar xf $DLIB_BRANCH.tar.gz \
     && mv dlib-* dlib \
@@ -21,7 +21,7 @@ RUN wget -c -q https://github.com/davisking/dlib/archive/$DLIB_BRANCH.tar.gz \
 # Build and install PDLib on builder
 ARG PDLIB_BRANCH=master
 RUN apt-get install unzip
-RUN wget -c -q https://github.com/goodspb/pdlib/archive/$PDLIB_BRANCH.zip \
+RUN wget -c -q https://github.com/matiasdelellis/pdlib/archive/$PDLIB_BRANCH.zip \
     && unzip $PDLIB_BRANCH \
     && mv pdlib-* pdlib \
     && cd pdlib \
@@ -38,13 +38,12 @@ RUN echo "extension=pdlib.so" > /usr/local/etc/php/conf.d/pdlib.ini
 
 # Install bzip2 needed to extract models
 
-RUN apt-get update && apt-get install -y libbz2-dev build-essential
-RUN docker-php-ext-configure bz2
-RUN docker-php-ext-install -j1 bz2
+RUN apt-get install -y libbz2-dev
+RUN docker-php-ext-install bz2
 
 # Test PDlib instalation on builder
 
-RUN apt-get install -y git libpng
+RUN apt-get install -y git
 RUN git clone https://github.com/matiasdelellis/pdlib-min-test-suite.git \
     && cd pdlib-min-test-suite \
     && make
@@ -52,7 +51,7 @@ RUN git clone https://github.com/matiasdelellis/pdlib-min-test-suite.git \
 #
 # If pass the tests, we are able to create the final image.
 #
-FROM nextcloud:31-apache
+FROM nextcloud:29-apache
 
 # Install dependencies to image
 
@@ -65,8 +64,6 @@ COPY --from=builder /usr/local/lib/libdlib.so* /usr/local/lib/
 
 # If is necesary take the php extention folder (/usr/local/lib/php/extensions/no-debug-non-zts-20180731) uncommenting the next line
 # RUN php -i | grep extension_dir
-RUN ls /usr/local/lib/php/extensions/
-RUN ls /usr/local/lib/php/extensions/no-debug-non-zts-20220829/
 COPY --from=builder /usr/local/lib/php/extensions/no-debug-non-zts-20220829/pdlib.so /usr/local/lib/php/extensions/no-debug-non-zts-20220829/
 
 # Enable PDlib on final image
@@ -98,4 +95,3 @@ RUN echo memory_limit=1024M > /usr/local/etc/php/conf.d/memory-limit.ini
 #   && sed -i 's/webpack --node-env development/NODE_ENV=development webpack/g' package.json \
 #   && npm ci \
 #   && make
-
