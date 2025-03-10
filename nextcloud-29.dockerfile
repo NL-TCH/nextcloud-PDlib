@@ -1,7 +1,7 @@
 #
 # Use a temporary image to compile and test the libraries
 #
-FROM nextcloud:29-apache as builder
+FROM nextcloud:29-apache AS builder
 # Build and install dlib on builder
 #
 RUN apt-get update ; \

@@ -1,7 +1,7 @@
 #
 # Use a temporary image to compile and test the libraries
 #
-FROM nextcloud:30-apache as builder
+FROM nextcloud:30-apache AS builder
 # Build and install dlib on builder
 #
 RUN apt-get update ; \
@@ -38,8 +38,9 @@ RUN echo "extension=pdlib.so" > /usr/local/etc/php/conf.d/pdlib.ini
 
 # Install bzip2 needed to extract models
 
-RUN apt-get install -y libbz2-dev
-RUN docker-php-ext-install bz2
+RUN apt-get update && apt-get install -y libbz2-dev build-essential
+RUN docker-php-ext-configure bz2
+RUN docker-php-ext-install -j1 bz2
 
 # Test PDlib instalation on builder
 

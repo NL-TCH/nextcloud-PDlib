@@ -24,5 +24,6 @@ jobs:
       - name: push the image
         run: |
           docker buildx build --push \
+            --file nextcloud-30.dockerfile \
             --tag dockerteun/nextcloud-pdlib:30 \
             --platform linux/arm64 .
